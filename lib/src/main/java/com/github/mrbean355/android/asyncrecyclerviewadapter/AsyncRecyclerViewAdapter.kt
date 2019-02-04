@@ -1,18 +1,28 @@
 package com.github.mrbean355.android.asyncrecyclerviewadapter
 
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.util.ArraySet
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
         private val diffCallback: DiffUtil.ItemCallback<T>,
         private val sortComparator: (o1: T, o2: T) -> Int,
         private val filterPredicate: (query: String, item: T) -> Boolean) : RecyclerView.Adapter<VH>() {
 
+    /** Full list of the maintained items. */
     private var sourceItems: List<T> = emptyList()
+    /** Items that are currently being displayed. */
     private var displayedItems: List<T> = emptyList()
+    /** Items that are currently selected. */
     private val selectedItems: MutableSet<T> = mutableSetOf()
-    private var busy = false
+    /** Pending list updates. */
+    private val updateQueue: Queue<List<T>> = ConcurrentLinkedQueue<List<T>>()
 
     /**
      * Set the adapter's items.
@@ -89,56 +99,78 @@ abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
         } else {
             selectedItems.add(item)
         }
-        val index = displayedItems.indexOf(item)
-        if (index != -1) {
-            notifyItemChanged(index)
+        notifyItemChanged(adapterPosition)
+    }
+
+    /** Update the displayed list, doing diff calculations in the background. */
+    private fun publishList(update: List<T>) {
+        updateQueue.add(update)
+        if (updateQueue.size == 1) {
+            // No other updates in progress; process this update.
+            processQueue()
         }
     }
 
-    private fun publishList(newList: List<T>) {
-        // FIXME: Enqueue updates instead of ignoring them.
-        if (busy) {
-            return
+    /** Process the next update in the [updateQueue]. */
+    private fun processQueue() {
+        val newList = updateQueue.remove()
+        doInBackground {
+            val result = DiffUtil.calculateDiff(DiffCallback(displayedItems, newList, diffCallback))
+            doOnMain {
+                this.displayedItems = newList
+                result.dispatchUpdatesTo(this)
+                if (updateQueue.isNotEmpty()) {
+                    processQueue()
+                }
+            }
         }
-        busy = true
-        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-            override fun getOldListSize() = displayedItems.size
-
-            override fun getNewListSize() = newList.size
-
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                val oldItem = displayedItems[oldItemPosition]
-                val newItem = newList[newItemPosition]
-                return if (oldItem != null && newItem != null) {
-                    diffCallback.areItemsTheSame(oldItem, newItem)
-                } else {
-                    oldItem == null && newItem == null
-                }
-            }
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                val oldItem = displayedItems[oldItemPosition]
-                val newItem = newList[newItemPosition]
-                return if (oldItem != null && newItem != null) {
-                    diffCallback.areContentsTheSame(oldItem, newItem)
-                } else if (oldItem == null && newItem == null) {
-                    true
-                } else {
-                    throw AssertionError()
-                }
-            }
-        }).dispatchUpdatesTo(this)
-        this.displayedItems = newList
-        busy = false
     }
 
-    /**
-     * Return a collection of items that are in either [a] or [b], but not both.
-     */
-    private fun <T> disjunctiveUnion(a: Collection<T>, b: Collection<T>): Collection<T> {
-        val result = a.union(b).toMutableSet()
-        val intersect = a.intersect(b)
-        result.removeAll(intersect)
-        return result
+    private companion object {
+        private val MAIN_THREAD_EXECUTOR = MainThreadExecutor()
+        private val BACKGROUND_THREAD_EXECUTOR = Executors.newSingleThreadExecutor()
+
+        /** Execute something on the main thread. */
+        private fun doOnMain(block: () -> Unit) {
+            MAIN_THREAD_EXECUTOR.execute(block)
+        }
+
+        /** Execute something on a background thread. */
+        private fun doInBackground(block: () -> Unit) {
+            BACKGROUND_THREAD_EXECUTOR.execute(block)
+        }
+
+        /** Return a collection of items that are in either [a] or [b], but not both. */
+        private fun <T> disjunctiveUnion(a: Collection<T>, b: Collection<T>): Collection<T> {
+            val result = a.union(b).toMutableSet()
+            val intersect = a.intersect(b)
+            result.removeAll(intersect)
+            return result
+        }
+    }
+
+    /** [DiffUtil.Callback] which delegates item checks to another [callback]. */
+    private class DiffCallback<T>(private val oldList: List<T>, private val newList: List<T>, private val callback: DiffUtil.ItemCallback<T>) : DiffUtil.Callback() {
+
+        override fun getOldListSize() = oldList.size
+
+        override fun getNewListSize() = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return callback.areItemsTheSame(oldList[oldItemPosition], newList[newItemPosition])
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return callback.areContentsTheSame(oldList[oldItemPosition], newList[newItemPosition])
+        }
+    }
+
+    /** Executor which executes things on the main thread. */
+    private class MainThreadExecutor : Executor {
+        private val handler = Handler(Looper.getMainLooper())
+
+        override fun execute(command: Runnable?) {
+            handler.post(command)
+        }
     }
 }
