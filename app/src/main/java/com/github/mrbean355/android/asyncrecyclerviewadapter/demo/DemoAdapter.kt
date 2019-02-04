@@ -11,7 +11,7 @@ import com.github.mrbean355.android.asyncrecyclerviewadapter.AsyncRecyclerViewAd
 
 class DemoAdapter : AsyncRecyclerViewAdapter<String, DemoAdapter.ViewHolder>(
         DiffCallbacks(),
-        { o1, o2 -> o2.compareTo(o1) },
+        { o1, o2 -> o1.length.compareTo(o2.length) },
         { query, item -> item.contains(query, ignoreCase = true) }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
