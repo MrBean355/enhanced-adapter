@@ -12,8 +12,6 @@ import java.util.concurrent.Executors
 
 abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
         private val diffCallback: DiffUtil.ItemCallback<T>,
-        private val sortComparator: (o1: T, o2: T) -> Int,
-        private val filterPredicate: (query: String, item: T) -> Boolean,
         private val maxSelections: Int) : RecyclerView.Adapter<VH>() {
 
     /** Full list of the maintained items. */
@@ -26,16 +24,35 @@ abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
     private val updateQueue: Queue<List<T>> = ConcurrentLinkedQueue<List<T>>()
 
     /**
+     * Override to customise item sorting.
+     *
+     * Performs no sorting by default.
+     */
+    protected open fun compareItems(lhs: T, rhs: T): Int {
+        return 0
+    }
+
+    /**
+     * Override to implement item filtering.
+     *
+     * Calling [filter] without providing custom behaviour here will cause no items to be displayed.
+     * [query] will never be empty.
+     */
+    protected open fun testItem(item: T, query: String): Boolean {
+        return false
+    }
+
+    /**
      * Set the adapter's items.
      *
-     * The items will be sorted according to the [sortComparator].
+     * [compareItems] will be used to compare items.
      * Resets any filtering done via [filter].
      * Ignores any `null` elements in the collection.
      */
     fun setItems(items: Collection<T>?) {
         this.sourceItems = items.orEmpty()
                 .filter { it != null }
-                .sortedWith(Comparator { o1, o2 -> sortComparator(o1, o2) })
+                .sortedWith(Comparator { o1, o2 -> compareItems(o1, o2) })
         publishList(sourceItems)
     }
 
@@ -73,9 +90,7 @@ abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
             publishList(sourceItems)
             return
         }
-        val filtered = this.sourceItems.filter {
-            filterPredicate(query, it)
-        }
+        val filtered = this.sourceItems.filter { testItem(it, query) }
         publishList(filtered)
     }
 

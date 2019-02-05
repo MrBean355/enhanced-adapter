@@ -9,11 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.github.mrbean355.android.asyncrecyclerviewadapter.AsyncRecyclerViewAdapter
 
-class DemoAdapter : AsyncRecyclerViewAdapter<String, DemoAdapter.ViewHolder>(
-        DiffCallbacks(),
-        { o1, o2 -> o1.length.compareTo(o2.length) },
-        { query, item -> item.contains(query, ignoreCase = true) },
-        3) {
+class DemoAdapter : AsyncRecyclerViewAdapter<String, DemoAdapter.ViewHolder>(DiffCallbacks(), 3) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -26,6 +22,14 @@ class DemoAdapter : AsyncRecyclerViewAdapter<String, DemoAdapter.ViewHolder>(
         holder.itemView.setOnClickListener {
             onItemClicked(holder.adapterPosition)
         }
+    }
+
+    override fun compareItems(lhs: String, rhs: String): Int {
+        return lhs.length.compareTo(rhs.length)
+    }
+
+    override fun testItem(item: String, query: String): Boolean {
+        return item.contains(query, ignoreCase = true)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
