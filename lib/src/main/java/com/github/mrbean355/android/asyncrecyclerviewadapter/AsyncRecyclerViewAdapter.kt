@@ -13,7 +13,8 @@ import java.util.concurrent.Executors
 abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
         private val diffCallback: DiffUtil.ItemCallback<T>,
         private val sortComparator: (o1: T, o2: T) -> Int,
-        private val filterPredicate: (query: String, item: T) -> Boolean) : RecyclerView.Adapter<VH>() {
+        private val filterPredicate: (query: String, item: T) -> Boolean,
+        private val maxSelections: Int) : RecyclerView.Adapter<VH>() {
 
     /** Full list of the maintained items. */
     private var sourceItems: List<T> = emptyList()
@@ -49,6 +50,9 @@ abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
      * Set the currently selected items.
      */
     fun setSelectedItems(selection: Collection<T>) {
+        if (selection.size > maxSelections) {
+            throw IllegalArgumentException("Tried to select more items (${selection.size}) than max ($maxSelections)")
+        }
         val changedItems = disjunctiveUnion(selectedItems, selection)
         selectedItems.clear()
         selectedItems.addAll(selection)
@@ -96,7 +100,7 @@ abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
         val item = getItemAt(adapterPosition)
         if (selectedItems.contains(item)) {
             selectedItems.remove(item)
-        } else {
+        } else if (selectedItems.size < maxSelections) {
             selectedItems.add(item)
         }
         notifyItemChanged(adapterPosition)

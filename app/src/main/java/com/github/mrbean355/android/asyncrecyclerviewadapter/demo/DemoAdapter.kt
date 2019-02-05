@@ -12,7 +12,8 @@ import com.github.mrbean355.android.asyncrecyclerviewadapter.AsyncRecyclerViewAd
 class DemoAdapter : AsyncRecyclerViewAdapter<String, DemoAdapter.ViewHolder>(
         DiffCallbacks(),
         { o1, o2 -> o1.length.compareTo(o2.length) },
-        { query, item -> item.contains(query, ignoreCase = true) }) {
+        { query, item -> item.contains(query, ignoreCase = true) },
+        3) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
