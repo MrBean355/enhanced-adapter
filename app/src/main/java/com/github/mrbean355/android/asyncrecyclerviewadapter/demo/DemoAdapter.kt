@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.github.mrbean355.android.asyncrecyclerviewadapter.AsyncRecyclerViewAdapter
+import com.github.mrbean355.android.AsyncRecyclerViewAdapter
 
 class DemoAdapter : AsyncRecyclerViewAdapter<String, DemoAdapter.ViewHolder>(DiffCallbacks(), 3) {
 

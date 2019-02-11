@@ -1,4 +1,4 @@
-package com.github.mrbean355.android.asyncrecyclerviewadapter
+package com.github.mrbean355.android
 
 import android.os.Handler
 import android.os.Looper
