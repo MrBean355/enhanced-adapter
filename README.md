@@ -1,4 +1,4 @@
-# Async RecyclerView Adapter
+# Enhanced Adapter
 This is a `RecyclerView.Adapter` extension which provides the functionality:
 - Item sorting; e.g. alphabetically.
 - Item filtering; filtering the list based on a search query.
@@ -9,11 +9,11 @@ This is a `RecyclerView.Adapter` extension which provides the functionality:
     - No UI freezes; list change calculations are done in a background thread.
     
 ## Usage
-Simply extend `AsyncRecyclerViewAdapter` instead of the usual `RecyclerView.Adapter`.
+Simply extend `com.github.mrbean355.android.EnhancedAdapter` instead of the usual `RecyclerView.Adapter`.
 
 #### Minimal Usage
 ```kotlin
-class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(
+class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(
     /* class that checks if items have changed */ MyDiffCallbacks(),
     /* max number of selections */                0) {
 
@@ -55,7 +55,7 @@ class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(
 #### Optional Extras
 ###### Sorting
 ```kotlin
-class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 0) {
+class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 0) {
     // Minimal stuff omitted...
     
     /** Customise how items are compared. */
@@ -67,7 +67,7 @@ class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(MyDif
 
 ###### Filtering
 ```kotlin
-class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 0) {
+class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 0) {
     // Minimal stuff omitted...
     
     /** Customise how items are tested. */
@@ -79,7 +79,7 @@ class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(MyDif
 
 ###### Single Selection
 ```kotlin
-class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 0) {
+class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 0) {
     // Minimal stuff omitted...
     
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -92,7 +92,7 @@ class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(MyDif
 
 ###### Multi-selection
 ```kotlin
-class MyAdapter : AsyncRecyclerViewAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 5) {
+class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(MyDiffCallbacks(), 5) {
     // Pass the max number of selection in the constructor (above).
     
     // Minimal stuff omitted...
