@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-abstract class AsyncRecyclerViewAdapter<T, VH : RecyclerView.ViewHolder>(
+abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
         private val diffCallback: DiffUtil.ItemCallback<T>,
         private val maxSelections: Int) : RecyclerView.Adapter<VH>() {
 

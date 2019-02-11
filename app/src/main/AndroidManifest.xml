@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.mrbean355.android.asyncrecyclerviewadapter.demo">
+<manifest
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.github.mrbean355.android.enhancedadapter.demo">
 
     <application
         android:allowBackup="true"
@@ -10,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.github.mrbean355.android.asyncrecyclerviewadapter.demo.MainActivity">
+        <activity android:name="com.github.mrbean355.android.demo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

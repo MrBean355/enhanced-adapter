@@ -1,4 +1,4 @@
-package com.github.mrbean355.android.asyncrecyclerviewadapter.demo
+package com.github.mrbean355.android.demo
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
@@ -7,9 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.github.mrbean355.android.AsyncRecyclerViewAdapter
+import com.github.mrbean355.android.EnhancedAdapter
+import com.github.mrbean355.android.enhancedadapter.demo.R
 
-class DemoAdapter : AsyncRecyclerViewAdapter<String, DemoAdapter.ViewHolder>(DiffCallbacks(), 3) {
+class DemoAdapter : EnhancedAdapter<String, DemoAdapter.ViewHolder>(DiffCallbacks(), 3) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

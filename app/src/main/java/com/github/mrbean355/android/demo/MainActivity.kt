@@ -1,4 +1,4 @@
-package com.github.mrbean355.android.asyncrecyclerviewadapter.demo
+package com.github.mrbean355.android.demo
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -7,6 +7,7 @@ import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.github.mrbean355.android.enhancedadapter.demo.R
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: DemoAdapter
