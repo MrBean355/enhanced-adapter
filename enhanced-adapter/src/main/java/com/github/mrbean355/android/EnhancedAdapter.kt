@@ -1,14 +1,11 @@
 package com.github.mrbean355.android
 
-import android.os.Handler
-import android.os.Looper
 import android.support.v4.util.ArraySet
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import java.util.*
+import java.util.Comparator
+import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
         private val diffCallback: DiffUtil.ItemCallback<T>,
@@ -133,9 +130,9 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
     /** Process the next update in the [updateQueue]. */
     private fun processQueue() {
         val newList = updateQueue.remove()
-        doInBackground {
+        EnhancedAdapterExecutorsImpl.executeOnWorkerThread {
             val result = DiffUtil.calculateDiff(DiffCallback(displayedItems, newList, diffCallback))
-            doOnMain {
+            EnhancedAdapterExecutorsImpl.executeOnMainThread {
                 this.displayedItems = newList
                 result.dispatchUpdatesTo(this)
                 if (updateQueue.isNotEmpty()) {
@@ -146,18 +143,6 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
     }
 
     private companion object {
-        private val MAIN_THREAD_EXECUTOR = MainThreadExecutor()
-        private val BACKGROUND_THREAD_EXECUTOR = Executors.newSingleThreadExecutor()
-
-        /** Execute something on the main thread. */
-        private fun doOnMain(block: () -> Unit) {
-            MAIN_THREAD_EXECUTOR.execute(block)
-        }
-
-        /** Execute something on a background thread. */
-        private fun doInBackground(block: () -> Unit) {
-            BACKGROUND_THREAD_EXECUTOR.execute(block)
-        }
 
         /** Return a collection of items that are in either [a] or [b], but not both. */
         private fun <T> disjunctiveUnion(a: Collection<T>, b: Collection<T>): Collection<T> {
@@ -181,15 +166,6 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return callback.areContentsTheSame(oldList[oldItemPosition], newList[newItemPosition])
-        }
-    }
-
-    /** Executor which executes things on the main thread. */
-    private class MainThreadExecutor : Executor {
-        private val handler = Handler(Looper.getMainLooper())
-
-        override fun execute(command: Runnable?) {
-            handler.post(command)
         }
     }
 }
