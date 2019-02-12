@@ -2,6 +2,7 @@ package com.github.mrbean355.android
 
 import android.os.Handler
 import android.os.Looper
+import android.support.annotation.VisibleForTesting
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -12,8 +13,10 @@ import java.util.concurrent.Executors
  * Can set a custom delegate to allow easier testing (e.g. run everything on the main thread).
  */
 internal object EnhancedAdapterExecutorsImpl : EnhancedAdapterExecutors {
-    private val defaultExecutors: EnhancedAdapterExecutors = DefaultExecutors()
-    private var delegate: EnhancedAdapterExecutors = defaultExecutors
+    @VisibleForTesting
+    internal val defaultExecutors: EnhancedAdapterExecutors = DefaultExecutors()
+    @VisibleForTesting
+    internal var delegate: EnhancedAdapterExecutors = defaultExecutors
 
     fun setDelegate(delegate: EnhancedAdapterExecutors?) {
         this.delegate = delegate ?: defaultExecutors

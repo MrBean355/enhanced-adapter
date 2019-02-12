@@ -1,10 +1,10 @@
 package com.github.mrbean355.android
 
+import android.support.annotation.VisibleForTesting
 import android.support.v4.util.ArraySet
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import java.util.Comparator
-import java.util.Queue
+import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
@@ -12,11 +12,14 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
         private val maxSelections: Int) : RecyclerView.Adapter<VH>() {
 
     /** Full list of the maintained items. */
-    private var sourceItems: List<T> = emptyList()
+    @VisibleForTesting
+    internal var sourceItems: List<T> = emptyList()
     /** Items that are currently being displayed. */
-    private var displayedItems: List<T> = emptyList()
+    @VisibleForTesting
+    internal var displayedItems: List<T> = emptyList()
     /** Items that are currently selected. */
-    private val selectedItems: MutableSet<T> = mutableSetOf()
+    @VisibleForTesting
+    internal val selectedItems: MutableSet<T> = mutableSetOf()
     /** Pending list updates. */
     private val updateQueue: Queue<List<T>> = ConcurrentLinkedQueue<List<T>>()
 
@@ -48,7 +51,6 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
      */
     fun setItems(items: Collection<T>?) {
         this.sourceItems = items.orEmpty()
-                .filter { it != null }
                 .sortedWith(Comparator { o1, o2 -> compareItems(o1, o2) })
         publishList(sourceItems)
     }
@@ -112,10 +114,11 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
         val item = getItemAt(adapterPosition)
         if (selectedItems.contains(item)) {
             selectedItems.remove(item)
+            notifyItemChanged(adapterPosition)
         } else if (selectedItems.size < maxSelections) {
             selectedItems.add(item)
+            notifyItemChanged(adapterPosition)
         }
-        notifyItemChanged(adapterPosition)
     }
 
     /** Update the displayed list, doing diff calculations in the background. */
