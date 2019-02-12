@@ -1,0 +1,78 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+boolean isReleaseBuild() {
+    return !version.contains("SNAPSHOT")
+}
+
+static String getReleaseRepositoryUrl() {
+    return 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+}
+
+static String getSnapshotRepositoryUrl() {
+    return 'https://oss.sonatype.org/content/repositories/snapshots/'
+}
+
+String getRepositoryUsername() {
+    return hasProperty('sonatypeNexusUsername') ? sonatypeNexusUsername : ""
+}
+
+String getRepositoryPassword() {
+    return hasProperty('sonatypeNexusPassword') ? sonatypeNexusPassword : ""
+}
+
+String getPublishedArtifact() {
+    return "$buildDir/outputs/aar/$artifactId-${version}.aar"
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier = 'sources'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = artifactId
+            artifact getPublishedArtifact()
+            artifact sourcesJar
+            pom {
+                name = 'Enhanced Adapter'
+                description = 'A RecyclerView Adapter extension to make life easier.'
+                url = 'https://github.com/MrBean355/enhanced-adapter'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'MrBean355'
+                        name = 'Michael Johnston'
+                        email = 'mrbean355@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/MrBean355/enhanced-adapter.git'
+                    developerConnection = 'scm:git:ssh://github.com/MrBean355/enhanced-adapter.git'
+                    url = 'https://github.com/MrBean355/enhanced-adapter'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username getRepositoryUsername()
+                password getRepositoryPassword()
+            }
+            url = isReleaseBuild() ? getReleaseRepositoryUrl() : getSnapshotRepositoryUrl()
+        }
+    }
+}
+
+signing {
+    required = isReleaseBuild()
+    sign publishing.publications.mavenJava
+}
