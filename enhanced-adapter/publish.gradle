@@ -14,11 +14,11 @@ static String getSnapshotRepositoryUrl() {
 }
 
 String getRepositoryUsername() {
-    return hasProperty('sonatypeNexusUsername') ? sonatypeNexusUsername : ""
+    return hasProperty('sonatypeNexusUsername') ? sonatypeNexusUsername : System.getenv('sonatypeNexusUsername')
 }
 
 String getRepositoryPassword() {
-    return hasProperty('sonatypeNexusPassword') ? sonatypeNexusPassword : ""
+    return hasProperty('sonatypeNexusPassword') ? sonatypeNexusPassword : System.getenv('sonatypeNexusPassword')
 }
 
 String getPublishedArtifact() {

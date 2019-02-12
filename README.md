@@ -1,4 +1,7 @@
 # Enhanced Adapter
+
+[![Build Status](https://travis-ci.org/MrBean355/enhanced-adapter.svg?branch=master)](https://travis-ci.org/MrBean355/enhanced-adapter)
+
 This is a `RecyclerView.Adapter` extension which provides the functionality:
 - Item sorting; e.g. alphabetically.
 - Item filtering; filtering the list based on a search query.
@@ -9,7 +12,25 @@ This is a `RecyclerView.Adapter` extension which provides the functionality:
     - No UI freezes; list change calculations are done in a background thread.
     
 ## Usage
-Simply extend `com.github.mrbean355.android.EnhancedAdapter` instead of the usual `RecyclerView.Adapter`.
+The library is published to Maven Central, so ensure you have the following in your top-level `build.gradle`:
+
+```groovy
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+```
+
+Add the dependency to your app-level `build.gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.github.mrbean355:enhanced-adapter:$latest_version'
+}
+```
+
+Finally, you can create an adapter which extends `com.github.mrbean355.android.EnhancedAdapter` instead of the usual `RecyclerView.Adapter`.
 
 #### Minimal Usage
 ```kotlin
