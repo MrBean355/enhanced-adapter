@@ -6,6 +6,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         minSdkVersion 16
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -21,4 +22,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-inline:2.23.4'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+    androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.2') {
+        exclude group: 'com.android.support', module: 'support-fragment'
+    }
+    androidTestImplementation ('com.android.support.test.espresso:espresso-contrib:3.0.2') {
+        exclude group: 'com.android.support', module: 'support-fragment'
+    }
+    androidTestImplementation ('com.android.support.test:rules:1.0.2') {
+        exclude group: 'com.android.support', module: 'support-fragment'
+    }
 }

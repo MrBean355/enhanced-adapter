@@ -35,8 +35,6 @@ class EnhancedAdapterExecutorsImplTest {
 
     @Test
     fun testSetDelegate_WithNullInput_SetsDelegateFieldToDefaultExecutors() {
-        val delegate = mock<EnhancedAdapterExecutors>()
-
         EnhancedAdapterExecutorsImpl.setDelegate(null)
 
         assertSame(EnhancedAdapterExecutorsImpl.defaultExecutors, EnhancedAdapterExecutorsImpl.delegate)

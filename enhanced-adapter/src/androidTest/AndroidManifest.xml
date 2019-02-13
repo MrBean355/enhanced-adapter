@@ -1,0 +1,9 @@
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.mrbean355.android.enhancedadapter">
+
+    <application>
+        <activity android:name="com.github.mrbean355.android.TestActivity" />
+    </application>
+
+</manifest>
