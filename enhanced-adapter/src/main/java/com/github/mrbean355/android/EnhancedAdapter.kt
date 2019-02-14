@@ -4,7 +4,8 @@ import android.support.annotation.VisibleForTesting
 import android.support.v4.util.ArraySet
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import java.util.*
+import java.util.Comparator
+import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 
 abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
@@ -123,7 +124,7 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
 
     /** Update the displayed list, doing diff calculations in the background. */
     private fun publishList(update: List<T>) {
-        updateQueue.add(update)
+        updateQueue.add(ArrayList(update))
         if (updateQueue.size == 1) {
             // No other updates in progress; process this update.
             processQueue()
@@ -132,12 +133,13 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
 
     /** Process the next update in the [updateQueue]. */
     private fun processQueue() {
-        val newList = updateQueue.remove()
+        val newList = updateQueue.element()
         EnhancedAdapterExecutorsImpl.executeOnWorkerThread {
             val result = DiffUtil.calculateDiff(DiffCallback(displayedItems, newList, diffCallback))
             EnhancedAdapterExecutorsImpl.executeOnMainThread {
                 this.displayedItems = newList
                 result.dispatchUpdatesTo(this)
+                updateQueue.remove()
                 if (updateQueue.isNotEmpty()) {
                     processQueue()
                 }
