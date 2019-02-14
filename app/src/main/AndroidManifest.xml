@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.github.mrbean355.android.demo.MainActivity">
+        <activity android:name="com.github.mrbean355.android.demo.CountryListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
