@@ -1,6 +1,6 @@
 # Enhanced Adapter
 
-[![Build Status](https://travis-ci.org/MrBean355/enhanced-adapter.svg?branch=master)](https://travis-ci.org/MrBean355/enhanced-adapter)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mrbean355/enhanced-adapter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mrbean355/enhanced-adapter)
 
 This is a `RecyclerView.Adapter` extension which provides the functionality:
 - Item sorting; e.g. alphabetically.
