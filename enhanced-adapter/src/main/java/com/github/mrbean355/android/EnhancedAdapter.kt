@@ -95,11 +95,6 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
     }
 
     /**
-     * @return the currently displayed item at [position].
-     */
-    fun getItemAt(position: Int) = displayedItems[position]
-
-    /**
      * @return `true` if the displayed item at [position] is currently selected, `false` otherwise.
      */
     fun isItemSelected(position: Int): Boolean {
@@ -107,6 +102,11 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
     }
 
     override fun getItemCount() = displayedItems.size
+
+    /**
+     * @return the currently displayed item at [position].
+     */
+    protected fun getItemAt(position: Int) = displayedItems[position]
 
     /**
      * Trigger a selection event; selecting the item at [adapterPosition] if its not selected, and deselecting it otherwise.
