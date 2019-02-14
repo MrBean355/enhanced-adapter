@@ -1,1 +1,1 @@
-include ':app', ':enhanced-adapter'
+include ':demo-app', ':enhanced-adapter'
