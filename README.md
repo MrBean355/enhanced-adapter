@@ -26,7 +26,7 @@ Add the dependency to your app-level `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.github.mrbean355:enhanced-adapter:$latest_version'
+    implementation 'com.github.mrbean355:enhanced-adapter:1.0.0'
 }
 ```
 
@@ -34,9 +34,12 @@ Finally, you can create an adapter which extends `com.github.mrbean355.android.E
 
 #### Minimal Usage
 ```kotlin
-class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(
-    /* class that checks if items have changed */ MyDiffCallbacks(),
-    /* max number of selections */                0) {
+/** Maximum number of multi-selections allowed. */
+private const val MAX_SELECTIONS = 3
+/** Callback for calculating the diff between two items in a list. */
+private val DIFF_CALLBACKS = MyDiffCallbacks()
+
+class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(DIFF_CALLBACKS, MAX_SELECTIONS) {
 
     /** Normal onCreateViewHolder() stuff */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
