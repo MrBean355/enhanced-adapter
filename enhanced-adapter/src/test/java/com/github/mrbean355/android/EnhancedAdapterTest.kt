@@ -51,17 +51,19 @@ class EnhancedAdapterTest {
     }
 
     @Test
-    fun testSetItems_WithNullInput_SetsDisplayedItemsFieldToSourceItemsField() {
+    fun testSetItems_WithNullInput_SetsItemFieldsToEmptyList() {
         adapter.setItems(null)
 
-        assertSame(adapter.sourceItems, adapter.displayedItems)
+        assertTrue(adapter.sourceItems.isEmpty())
+        assertTrue(adapter.displayedItems.isEmpty())
     }
 
     @Test
-    fun testSetItems_WithNonNullInput_SetsDisplayedItemsFieldToSourceItemsField() {
+    fun testSetItems_WithNonNullInput_SetsSortedItemFields() {
         adapter.setItems(listOf(1, 3, 6, 2, 0, 9))
 
-        assertSame(adapter.sourceItems, adapter.displayedItems)
+        assertArrayEquals(arrayOf(9, 6, 3, 2, 1, 0), adapter.sourceItems.toTypedArray())
+        assertArrayEquals(arrayOf(9, 6, 3, 2, 1, 0), adapter.displayedItems.toTypedArray())
     }
 
     @Test
@@ -111,7 +113,7 @@ class EnhancedAdapterTest {
 
         adapter.filter(null)
 
-        assertSame(adapter.sourceItems, adapter.displayedItems)
+        assertArrayEquals(arrayOf(1, 2, 3, 4), adapter.displayedItems.toTypedArray())
     }
 
     @Test
@@ -121,7 +123,7 @@ class EnhancedAdapterTest {
 
         adapter.filter("")
 
-        assertSame(adapter.sourceItems, adapter.displayedItems)
+        assertArrayEquals(arrayOf(1, 2, 3, 4), adapter.displayedItems.toTypedArray())
     }
 
     @Test
@@ -140,7 +142,7 @@ class EnhancedAdapterTest {
     fun testGetItemAt_ReturnsDisplayItemAt() {
         adapter.displayedItems = listOf(1, 2, 3)
 
-        val result = adapter.getItemAt(1)
+        val result = adapter.testGetItemAt(1)
 
         assertEquals(2, result)
     }
@@ -225,6 +227,11 @@ class EnhancedAdapterTest {
         fun testOnClick(adapterPosition: Int) {
             // Can't directly access onItemClicked() because it's protected.
             onItemClicked(adapterPosition)
+        }
+
+        fun testGetItemAt(position: Int): Int {
+            // Can't directly access getItemAt() because it's protected.
+            return getItemAt(position)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestViewHolder {
