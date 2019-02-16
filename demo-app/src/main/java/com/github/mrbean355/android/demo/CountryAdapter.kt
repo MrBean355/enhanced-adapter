@@ -1,11 +1,12 @@
 package com.github.mrbean355.android.demo
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
+import android.widget.TextView
 import com.github.mrbean355.android.EnhancedAdapter
 import com.github.mrbean355.android.enhancedadapter.demo.R
 
@@ -13,12 +14,12 @@ class CountryAdapter : EnhancedAdapter<String, CountryAdapter.ViewHolder>(DiffCa
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ViewHolder(inflater.inflate(R.layout.item_country, parent, false))
+        return ViewHolder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.checkBox.text = getItemAt(position)
-        holder.checkBox.isChecked = isItemSelected(position)
+        holder.textView.text = getItemAt(position)
+        holder.textView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, if (isItemSelected(position)) R.color.colorAccent else android.R.color.transparent))
         holder.itemView.setOnClickListener {
             onItemClicked(holder.adapterPosition)
         }
@@ -33,7 +34,7 @@ class CountryAdapter : EnhancedAdapter<String, CountryAdapter.ViewHolder>(DiffCa
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val checkBox = itemView as CheckBox
+        val textView = itemView as TextView
     }
 
     class DiffCallbacks : DiffUtil.ItemCallback<String>() {
