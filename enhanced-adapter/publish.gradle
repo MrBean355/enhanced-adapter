@@ -1,78 +1,100 @@
-apply plugin: 'maven-publish'
+/*
+ * Copyright 2013 Chris Banes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'maven'
 apply plugin: 'signing'
 
-boolean isReleaseBuild() {
-    return !version.contains("SNAPSHOT")
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
 }
 
-static String getReleaseRepositoryUrl() {
-    return 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+def getReleaseRepositoryUrl() {
+    return "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 }
 
-static String getSnapshotRepositoryUrl() {
-    return 'https://oss.sonatype.org/content/repositories/snapshots/'
+def getSnapshotRepositoryUrl() {
+    return "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-String getRepositoryUsername() {
-    return hasProperty('sonatypeNexusUsername') ? sonatypeNexusUsername : System.getenv('sonatypeNexusUsername')
+def getRepositoryUsername() {
+    return hasProperty('SONATYPE_NEXUS_USERNAME') ? SONATYPE_NEXUS_USERNAME : ""
 }
 
-String getRepositoryPassword() {
-    return hasProperty('sonatypeNexusPassword') ? sonatypeNexusPassword : System.getenv('sonatypeNexusPassword')
+def getRepositoryPassword() {
+    return hasProperty('SONATYPE_NEXUS_PASSWORD') ? SONATYPE_NEXUS_PASSWORD : ""
 }
 
-String getPublishedArtifact() {
-    return "$buildDir/outputs/aar/$artifactId-${version}.aar"
-}
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier = 'sources'
-}
+                pom.groupId = groupId
+                pom.artifactId = artifactId
+                pom.version = version
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = artifactId
-            artifact getPublishedArtifact()
-            artifact sourcesJar
-            pom {
-                name = 'Enhanced Adapter'
-                description = 'A RecyclerView Adapter extension to make life easier.'
-                url = 'https://github.com/MrBean355/enhanced-adapter'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
+                repository(url: getReleaseRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
                 }
-                developers {
-                    developer {
-                        id = 'MrBean355'
-                        name = 'Michael Johnston'
-                        email = 'mrbean355@gmail.com'
-                    }
+                snapshotRepository(url: getSnapshotRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
                 }
-                scm {
-                    connection = 'scm:git:git://github.com/MrBean355/enhanced-adapter.git'
-                    developerConnection = 'scm:git:ssh://github.com/MrBean355/enhanced-adapter.git'
-                    url = 'https://github.com/MrBean355/enhanced-adapter'
+
+                pom.project {
+                    name 'Enhanced Adapter'
+                    packaging 'aar'
+                    description 'A RecyclerView Adapter extension to make life easier.'
+                    url 'https://github.com/MrBean355/enhanced-adapter'
+
+                    scm {
+                        url 'https://github.com/MrBean355/enhanced-adapter'
+                        connection 'scm:git:git://github.com/MrBean355/enhanced-adapter.git'
+                        developerConnection 'scm:git:ssh://github.com/MrBean355/enhanced-adapter.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'MrBean355'
+                            name 'Michael Johnston'
+                        }
+                    }
                 }
             }
         }
     }
-    repositories {
-        maven {
-            credentials {
-                username getRepositoryUsername()
-                password getRepositoryPassword()
-            }
-            url = isReleaseBuild() ? getReleaseRepositoryUrl() : getSnapshotRepositoryUrl()
-        }
-    }
-}
 
-signing {
-    required = isReleaseBuild()
-    sign publishing.publications.mavenJava
+    signing {
+        required { isReleaseBuild() }
+        sign configurations.archives
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.source
+    }
+
+    artifacts {
+        archives androidSourcesJar
+    }
 }
