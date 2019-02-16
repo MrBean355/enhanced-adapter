@@ -17,8 +17,8 @@ class CountryListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_country_list)
 
         adapter = CountryAdapter()
-        adapter.setItems(COUNTRIES)
-        adapter.setSelectedItems(listOf("Angola", "South Africa"))
+        adapter.setItems(buildCountryList())
+        adapter.setSelectedItems(listOf(Country("Angola"), Country("South Africa")))
 
         findViewById<RecyclerView>(R.id.recycler_view).adapter = adapter
     }
@@ -99,5 +99,9 @@ class CountryListActivity : AppCompatActivity() {
                 "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
                 "United States", "United States Minor Outlying Islands", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Viet Nam", "Virgin Islands", "British", "Virgin Islands",
                 "U.S.", "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe")
+
+        private fun buildCountryList(): List<Country> {
+            return COUNTRIES.map { Country(it) }
+        }
     }
 }

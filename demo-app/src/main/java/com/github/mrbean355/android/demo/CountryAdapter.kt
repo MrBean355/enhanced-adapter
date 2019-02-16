@@ -10,40 +10,57 @@ import android.widget.TextView
 import com.github.mrbean355.android.EnhancedAdapter
 import com.github.mrbean355.android.enhancedadapter.demo.R
 
-class CountryAdapter : EnhancedAdapter<String, CountryAdapter.ViewHolder>(DiffCallbacks(), 3) {
+private const val MAX_SELECTIONS = 3
 
+class CountryAdapter : EnhancedAdapter<Country, CountryAdapter.ViewHolder>(DiffCallbacks(), MAX_SELECTIONS) {
+
+    /** Create the view holder like normal. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ViewHolder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false))
     }
 
+    /** Bind the view holder like normal, with some additional steps. */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = getItemAt(position)
+        val item = getItemAt(position)
+        holder.textView.text = item.name
+
+        // If the item is selected, do something to indicate it.
         holder.textView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, if (isItemSelected(position)) R.color.colorAccent else android.R.color.transparent))
+
+        // When an item is clicked, trigger a selection event.
         holder.itemView.setOnClickListener {
             onItemClicked(holder.adapterPosition)
         }
     }
 
-    override fun compareItems(lhs: String, rhs: String): Int {
-        return lhs.compareTo(rhs)
+    /** Sort the items alphabetically. */
+    override fun compareItems(lhs: Country, rhs: Country): Int {
+        return lhs.name.compareTo(rhs.name)
     }
 
-    override fun testItem(item: String, query: String): Boolean {
-        return item.contains(query, ignoreCase = true)
+    /** Items match the search query if they contain it. */
+    override fun testItem(item: Country, query: String): Boolean {
+        return item.name.contains(query, ignoreCase = true)
     }
 
+    /** Normal view holder stuff. */
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView = itemView as TextView
     }
 
-    class DiffCallbacks : DiffUtil.ItemCallback<String>() {
+    /**
+     * Class that decides if items have changed.
+     *
+     * See: https://developer.android.com/reference/android/support/v7/util/DiffUtil
+     */
+    class DiffCallbacks : DiffUtil.ItemCallback<Country>() {
 
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+        override fun areItemsTheSame(oldItem: Country, newItem: Country): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(p0: String, p1: String): Boolean {
+        override fun areContentsTheSame(oldItem: Country, newItem: Country): Boolean {
             return true
         }
     }
