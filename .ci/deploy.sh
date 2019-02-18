@@ -1,11 +1,9 @@
 #!/bin/bash
 
-set -e
-
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "Skipping snapshot deployment: was pull request."
-elif [ "$TRAVIS_BRANCH" != "master" -a "$TRAVIS_BRANCH" != "develop" ]; then
-  echo "Skipping snapshot deployment: wrong branch. Expected 'master' or 'develop' but was '$TRAVIS_BRANCH'."
+if [ "$TRAVIS_BRANCH" != "develop" ]; then
+  echo "Skipping snapshot deployment: wrong branch. Expected 'develop' but was '$TRAVIS_BRANCH'."
+  exit 0
 else
-  ./gradlew --no-daemon publish
+  ./gradlew --no-daemon uploadArchives
+  exit $?
 fi
