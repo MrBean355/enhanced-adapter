@@ -1,9 +1,9 @@
 package com.github.mrbean355.android
 
-import android.support.annotation.VisibleForTesting
-import android.support.v4.util.ArraySet
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.VisibleForTesting
+import androidx.collection.ArraySet
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import java.util.Comparator
 import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue

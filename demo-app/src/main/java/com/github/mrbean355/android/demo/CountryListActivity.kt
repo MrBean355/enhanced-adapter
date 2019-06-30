@@ -1,12 +1,12 @@
 package com.github.mrbean355.android.demo
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mrbean355.android.enhancedadapter.demo.R
 
 class CountryListActivity : AppCompatActivity() {
