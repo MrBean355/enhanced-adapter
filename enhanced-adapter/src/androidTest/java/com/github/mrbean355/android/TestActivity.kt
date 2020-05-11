@@ -37,12 +37,12 @@ class TestActivity : Activity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == 1) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == 1) {
             adapter.filter("c")
             return true
         }
-        if (item?.itemId == 2) {
+        if (item.itemId == 2) {
             adapter.filter(null)
             return true
         }

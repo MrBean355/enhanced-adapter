@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class EnhancedAdapterUiTest {
     @get:Rule
-    val activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java, false, false)
+    val activityRule = ActivityTestRule(TestActivity::class.java, false, false)
 
     @Test
     fun testThatItemsGetSortedAndDisplayed() {

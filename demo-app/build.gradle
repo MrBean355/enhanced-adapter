@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.github.mrbean355.android.enhancedadapter"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
     }
     buildTypes {
         release {
@@ -19,7 +19,7 @@ android {
 dependencies {
     implementation project(':enhanced-adapter')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core:1.0.2'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 }
