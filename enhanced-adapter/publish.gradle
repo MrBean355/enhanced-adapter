@@ -35,8 +35,8 @@ afterEvaluate { project ->
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.github.mrbean355'
-                artifactId = 'enhanced-adapter'
+                groupId = project.groupId
+                artifactId = project.artifactId
                 version = project.version
                 artifact(androidSourcesJar)
 
