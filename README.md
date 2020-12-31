@@ -26,7 +26,7 @@ Add the dependency to your app-level `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.github.mrbean355:enhanced-adapter:1.0.0'
+    implementation 'com.github.mrbean355:enhanced-adapter:1.1.0'
 }
 ```
 
