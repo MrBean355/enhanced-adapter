@@ -52,7 +52,7 @@ class CountryAdapter : EnhancedAdapter<Country, CountryAdapter.ViewHolder>(DiffC
     /**
      * Class that decides if items have changed.
      *
-     * See: https://developer.android.com/reference/android/support/v7/util/DiffUtil
+     * See: https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
      */
     class DiffCallbacks : DiffUtil.ItemCallback<Country>() {
 

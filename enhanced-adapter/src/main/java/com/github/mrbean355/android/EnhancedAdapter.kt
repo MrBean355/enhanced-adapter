@@ -4,34 +4,35 @@ import androidx.annotation.VisibleForTesting
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import java.util.Comparator
 import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 
 abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
-        private val diffCallback: DiffUtil.ItemCallback<T>,
-        private val maxSelections: Int) : RecyclerView.Adapter<VH>() {
+    private val diffCallback: DiffUtil.ItemCallback<T>,
+    private val maxSelections: Int
+) : RecyclerView.Adapter<VH>() {
 
     /** Full list of the maintained items. */
     @VisibleForTesting
     internal var sourceItems: List<T> = emptyList()
+
     /** Items that are currently being displayed. */
     @VisibleForTesting
     internal var displayedItems: List<T> = emptyList()
+
     /** Items that are currently selected. */
     @VisibleForTesting
     internal val selectedItems: MutableSet<T> = mutableSetOf()
+
     /** Pending list updates. */
-    private val updateQueue: Queue<List<T>> = ConcurrentLinkedQueue<List<T>>()
+    private val updateQueue: Queue<List<T>> = ConcurrentLinkedQueue()
 
     /**
      * Override to customise item sorting.
      *
      * Performs no sorting by default.
      */
-    protected open fun compareItems(lhs: T, rhs: T): Int {
-        return 0
-    }
+    protected open fun compareItems(lhs: T, rhs: T): Int = 0
 
     /**
      * Override to implement item filtering.
@@ -39,9 +40,7 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
      * Calling [filter] without providing custom behaviour here will cause no items to be displayed.
      * [query] will never be empty.
      */
-    protected open fun testItem(item: T, query: String): Boolean {
-        return false
-    }
+    protected open fun testItem(item: T, query: String): Boolean = false
 
     /**
      * Set the adapter's items.
@@ -51,8 +50,9 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
      * Ignores any `null` elements in the collection.
      */
     fun setItems(items: Collection<T>?) {
-        this.sourceItems = items.orEmpty()
-                .sortedWith(Comparator { o1, o2 -> compareItems(o1, o2) })
+        this.sourceItems = items.orEmpty().sortedWith { o1, o2 ->
+            compareItems(o1, o2)
+        }
         publishList(sourceItems)
     }
 
@@ -74,10 +74,8 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
         selectedItems.clear()
         selectedItems.addAll(selection)
         changedItems.map { displayedItems.indexOf(it) }
-                .filter { it != -1 }
-                .forEach {
-                    notifyItemChanged(it)
-                }
+            .filter { it != -1 }
+            .forEach { notifyItemChanged(it) }
     }
 
     /**
@@ -159,7 +157,11 @@ abstract class EnhancedAdapter<T, VH : RecyclerView.ViewHolder>(
     }
 
     /** [DiffUtil.Callback] which delegates item checks to another [callback]. */
-    private class DiffCallback<T>(private val oldList: List<T>, private val newList: List<T>, private val callback: DiffUtil.ItemCallback<T>) : DiffUtil.Callback() {
+    private class DiffCallback<T>(
+        private val oldList: List<T>,
+        private val newList: List<T>,
+        private val callback: DiffUtil.ItemCallback<T>
+    ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldList.size
 
