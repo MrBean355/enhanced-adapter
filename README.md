@@ -6,7 +6,7 @@ This is a `RecyclerView.Adapter` extension which provides the functionality:
 - Item sorting; e.g. alphabetically.
 - Item filtering; filtering the list based on a search query.
 - Item selection; facilitates single & multi-selection of items.
-- Uses [`DiffUtil`](https://developer.android.com/reference/android/support/v7/util/DiffUtil) behind the scenes. This means:
+- Uses [`DiffUtil`](https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil) behind the scenes. This means:
     - Changes in the list are animated (e.g. items slide up when one is removed).
     - Changes are efficient; only changed items are rebound (i.e. no `notifyDataSetChanged()`).
     - No UI freezes; list change calculations are done in a background thread.
@@ -61,7 +61,7 @@ class MyAdapter : EnhancedAdapter<MyItem, MyAdapter.MyViewHolder>(DIFF_CALLBACKS
     /**
     * Callback for calculating the diff between two items in a list.
     * 
-    * See: https://developer.android.com/reference/android/support/v7/util/DiffUtil.ItemCallback
+    * See: https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil.ItemCallback
     */
     class MyDiffCallbacks : DiffUtil.ItemCallback<MyItem>() {
 

@@ -1,15 +1,15 @@
 package com.github.mrbean355.android
 
 import android.content.Intent
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.PositionAssertions.isCompletelyBelow
-import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withText
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.PositionAssertions.isCompletelyBelow
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class EnhancedAdapterUiTest {
     @get:Rule
-    val activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java, false, false)
+    val activityRule = ActivityTestRule(TestActivity::class.java, false, false)
 
     @Test
     fun testThatItemsGetSortedAndDisplayed() {
@@ -25,15 +25,15 @@ class EnhancedAdapterUiTest {
 
         onView(withText("a")).check(matches(isDisplayed()))
         onView(withText("b")).check(matches(isDisplayed()))
-                .check(isCompletelyBelow(withText("a")))
+            .check(isCompletelyBelow(withText("a")))
         onView(withText("c")).check(matches(isDisplayed()))
-                .check(isCompletelyBelow(withText("b")))
+            .check(isCompletelyBelow(withText("b")))
         onView(withText("d")).check(matches(isDisplayed()))
-                .check(isCompletelyBelow(withText("c")))
+            .check(isCompletelyBelow(withText("c")))
         onView(withText("e")).check(matches(isDisplayed()))
-                .check(isCompletelyBelow(withText("d")))
+            .check(isCompletelyBelow(withText("d")))
         onView(withText("f")).check(matches(isDisplayed()))
-                .check(isCompletelyBelow(withText("e")))
+            .check(isCompletelyBelow(withText("e")))
     }
 
     @Test
@@ -49,11 +49,11 @@ class EnhancedAdapterUiTest {
     }
 
     @Test
-    fun testThatClickingAnDeselectedItemSelectsIt() {
+    fun testThatClickingADeselectedItemSelectsIt() {
         activityRule.launchActivity(null)
 
         onView(withText("b"))
-                .perform(click())
+            .perform(click())
 
         onView(withText("a")).check(matches(isDisplayed()))
         onView(withText("b SELECTED")).check(matches(isDisplayed()))
@@ -68,7 +68,7 @@ class EnhancedAdapterUiTest {
         activityRule.launchActivity(Intent().putExtra(TestActivity.KEY_SELECTED_ITEM, "b"))
 
         onView(withText("b SELECTED"))
-                .perform(click())
+            .perform(click())
 
         onView(withText("a")).check(matches(isDisplayed()))
         onView(withText("b")).check(matches(isDisplayed()))
@@ -83,11 +83,11 @@ class EnhancedAdapterUiTest {
         activityRule.launchActivity(null)
 
         onView(withText("a"))
-                .perform(click())
+            .perform(click())
         onView(withText("b"))
-                .perform(click())
+            .perform(click())
         onView(withText("c"))
-                .perform(click())
+            .perform(click())
 
         onView(withText("a SELECTED")).check(matches(isDisplayed()))
         onView(withText("b SELECTED")).check(matches(isDisplayed()))
@@ -102,7 +102,7 @@ class EnhancedAdapterUiTest {
         activityRule.launchActivity(null)
 
         onView(withText("FILTER"))
-                .perform(click())
+            .perform(click())
 
         onView(withText("a")).check(doesNotExist())
         onView(withText("b")).check(doesNotExist())
@@ -117,9 +117,9 @@ class EnhancedAdapterUiTest {
         activityRule.launchActivity(null)
 
         onView(withText("FILTER"))
-                .perform(click())
+            .perform(click())
         onView(withText("RESET"))
-                .perform(click())
+            .perform(click())
 
         onView(withText("a")).check(matches(isDisplayed()))
         onView(withText("b")).check(matches(isDisplayed()))

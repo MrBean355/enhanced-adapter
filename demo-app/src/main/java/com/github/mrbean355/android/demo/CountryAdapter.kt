@@ -1,12 +1,12 @@
 package com.github.mrbean355.android.demo
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mrbean355.android.EnhancedAdapter
 import com.github.mrbean355.android.enhancedadapter.demo.R
 
@@ -52,7 +52,7 @@ class CountryAdapter : EnhancedAdapter<Country, CountryAdapter.ViewHolder>(DiffC
     /**
      * Class that decides if items have changed.
      *
-     * See: https://developer.android.com/reference/android/support/v7/util/DiffUtil
+     * See: https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
      */
     class DiffCallbacks : DiffUtil.ItemCallback<Country>() {
 
